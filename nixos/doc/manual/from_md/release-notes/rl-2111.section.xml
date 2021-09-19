@@ -1487,6 +1487,18 @@ Superuser created successfully.
           <literal>pkgs.haskell-language-server.override { supportedGhcVersions = [ &quot;90&quot; &quot;92&quot; ]; }</literal>.
         </para>
       </listitem>
+      <listitem>
+        <para>
+          <literal>replay-sorcery</literal> was upgraded from 0.5.0 to
+          0.6.0. The service will now automatically start after logging
+          into a graphical session. This can be disabled with
+          <literal>services.replay-sorcery.autoStart = false</literal>.
+          <literal>services.replay-sorcery.enableSysAdminCapability</literal>
+          was also removed. It's no longer relevant now that
+          ReplaySorcery manages hardware acceleration through a separate
+          service.
+        </para>
+      </listitem>
     </itemizedlist>
   </section>
   <section xml:id="sec-release-21.11-notable-changes">
