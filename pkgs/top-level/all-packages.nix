@@ -35301,6 +35301,10 @@ with pkgs;
 
   keen4 = callPackage ../games/keen4 { };
 
+  VVVVVV = callPackage ../games/VVVVVV/with-assets.nix {
+    inherit (darwin.apple_sdk.frameworks) Foundation;
+  };
+
   zeroadPackages = recurseIntoAttrs (callPackage ../games/0ad {
     wxGTK = wxGTK32;
   });
