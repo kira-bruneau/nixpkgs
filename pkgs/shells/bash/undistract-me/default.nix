@@ -10,15 +10,15 @@
 , xprop
 }:
 
-stdenvNoCC.mkDerivation rec {
+stdenvNoCC.mkDerivation {
   pname = "undistract-me";
   version = "unstable-2020-08-09";
 
   src = fetchFromGitHub {
     owner = "jml";
-    repo = pname;
+    repo = "undistract-me";
     rev = "2f8ac25c6ad8efcf160d2b480825b1cbb6772aab";
-    hash = "sha256-Qw7Cu9q0ZgK/RTvyDdHM5N3eBaKjtYqYH0J+hKMUZX8=";
+    sha256 = "sha256-Qw7Cu9q0ZgK/RTvyDdHM5N3eBaKjtYqYH0J+hKMUZX8=";
   };
 
   patches = [
@@ -43,8 +43,6 @@ stdenvNoCC.mkDerivation rec {
     })
   ];
 
-  strictDeps = true;
-
   # Patch in dependencies. Can't use makeWrapper because the bash
   # functions will be sourced and invoked in a different environment
   # for each command invocation.
@@ -64,12 +62,16 @@ stdenvNoCC.mkDerivation rec {
     done
   '';
 
+  strictDeps = true;
+
   installPhase = ''
+    runHook preInstall
     mkdir -p "$out/share/undistract-me" "$out/etc/profile.d" "$out/share/licenses/undistract-me"
     cp long-running.bash "$out/share/undistract-me"
     cp preexec.bash "$out/share/undistract-me"
     cp undistract-me.sh "$out/etc/profile.d"
     cp LICENSE "$out/share/licenses/undistract-me"
+    runHook postInstall
   '';
 
   meta = with lib; {
@@ -77,5 +79,6 @@ stdenvNoCC.mkDerivation rec {
     homepage = "https://github.com/jml/undistract-me";
     license = licenses.mit;
     maintainers = with maintainers; [ kira-bruneau ];
+    platforms = platforms.linux;
   };
 }
