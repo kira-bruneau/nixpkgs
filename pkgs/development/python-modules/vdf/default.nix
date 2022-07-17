@@ -11,9 +11,9 @@ buildPythonPackage rec {
 
   src = fetchFromGitHub {
     owner = "ValvePython";
-    repo = pname;
-    rev = "v${version}";
-    hash = "sha256-6ozglzZZNKDtADkHwxX2Zsnkh6BE8WbcRcC9HkTTgPU=";
+    repo = "vdf";
+    rev = "refs/tags/v${version}";
+    sha256 = "sha256-6ozglzZZNKDtADkHwxX2Zsnkh6BE8WbcRcC9HkTTgPU=";
   };
 
   checkInputs = [ mock pytestCheckHook ];
