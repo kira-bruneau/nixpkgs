@@ -1,8 +1,8 @@
 { clonehero-unwrapped
+, clonehero-xdg-wrapper
 , makeDesktopItem
 , buildFHSUserEnv
 , liberation_ttf
-, callPackage
 }:
 
 let
@@ -35,5 +35,5 @@ buildFHSUserEnv {
     ln -s ${clonehero-unwrapped}/share/clonehero_Data/Resources/UnityPlayer.png "$out/share/pixmaps/${name}.png"
   '';
 
-  runScript = callPackage ./xdg-wrapper.nix { };
+  runScript = clonehero-xdg-wrapper;
 }
