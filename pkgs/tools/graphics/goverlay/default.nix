@@ -36,14 +36,15 @@ let
       fi
     done
   '';
-in stdenv.mkDerivation rec {
+in
+stdenv.mkDerivation (finalAttrs: {
   pname = "goverlay";
   version = "0.7.1";
 
   src = fetchFromGitHub {
     owner = "benjamimgois";
-    repo = pname;
-    rev = version;
+    repo = "goverlay";
+    rev = "refs/tags/${finalAttrs.version}";
     sha256 = "sha256-oXkGrMHjs8uui0pzGYW8jnttet/5IX0r8eat0n5saFk=";
   };
 
@@ -76,7 +77,7 @@ in stdenv.mkDerivation rec {
     libX11
   ];
 
-  NIX_LDFLAGS = "-lGLU -rpath ${lib.makeLibraryPath buildInputs}";
+  NIX_LDFLAGS = "-lGLU -rpath ${lib.makeLibraryPath finalAttrs.buildInputs}";
 
   buildPhase = ''
     runHook preBuild
@@ -114,4 +115,4 @@ in stdenv.mkDerivation rec {
     maintainers = with maintainers; [ kira-bruneau ];
     platforms = platforms.linux;
   };
-}
+})
