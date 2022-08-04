@@ -100,5 +100,6 @@ stdenv.mkDerivation (finalAttrs: {
     maintainers = with maintainers; [ kira-bruneau stunkymonkey ];
     platforms = platforms.unix;
     mainProgram = "com.gitlab.newsflash";
+    broken = stdenv.isDarwin; # webkitgtk doesn't build on Darwin
   };
 })
