@@ -33,6 +33,7 @@
   # Optional GUI dependencies
 , guiModule ? "off"
 , cairo
+, Cocoa
 , fltk
 , libGL
 , libjpeg
@@ -85,7 +86,10 @@ in stdenv.mkDerivation rec {
     ++ lib.optionals sndioSupport [ sndio ]
     ++ lib.optionals (guiModule == "fltk") [ fltk libjpeg libXpm ]
     ++ lib.optionals (guiModule == "ntk") [ ntk cairo libXpm ]
-    ++ lib.optionals (guiModule == "zest") [ libGL libX11 ];
+    ++ lib.optionals (guiModule == "zest")
+      (if stdenv.isDarwin
+       then [ Cocoa ]
+       else [ libGL libX11 ]);
 
   cmakeFlags = [ "-DGuiModule=${guiModule}" ]
     # OSS library is included in glibc.
@@ -150,6 +154,6 @@ in stdenv.mkDerivation rec {
     # - ZynAddSubFX LV2 & VST plugin fail to compile (not setup to use ObjC version of pugl)
     # - TTL generation crashes (`pointer being freed was not allocated`) for all VST plugins using AbstractFX
     # - Zest UI fails to start on pulg_setup: Could not open display, aborting.
-    broken = stdenv.isDarwin;
+    # broken = stdenv.isDarwin;
   };
 }

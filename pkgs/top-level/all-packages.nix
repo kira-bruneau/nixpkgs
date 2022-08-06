@@ -31956,6 +31956,7 @@ with pkgs;
   zynaddsubfx = callPackage ../applications/audio/zynaddsubfx {
     guiModule = "zest";
     fftw = fftwSinglePrec;
+    inherit (darwin.apple_sdk.frameworks) Cocoa;
   };
 
   zynaddsubfx-fltk = zynaddsubfx.override {
