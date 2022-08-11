@@ -11,8 +11,7 @@
 , pythonOlder
 , typing-extensions
 # dependencies for building documentation.
-# docs fail to build in Darwin sandbox: https://github.com/samuelcolvin/pydantic/issues/4245
-, withDocs ? (stdenv.hostPlatform == stdenv.buildPlatform && !stdenv.isDarwin)
+, withDocs ? (stdenv.hostPlatform == stdenv.buildPlatform)
 , ansi2html
 , markdown-include
 , mkdocs
@@ -27,7 +26,7 @@
 
 buildPythonPackage rec {
   pname = "pydantic";
-  version = "1.9.1";
+  version = "1.9.2";
 
   outputs = [
     "out"
@@ -41,7 +40,7 @@ buildPythonPackage rec {
     owner = "samuelcolvin";
     repo = pname;
     rev = "refs/tags/v${version}";
-    sha256 = "sha256-jqTtNJQ9lRkxDYGG4vg91qH1jrxRU9orEeUofO+bBpA=";
+    sha256 = "sha256-ZGFxyQ1qD3zZWTdfTeoGj3UcUwAzO8K0DySdVAsMHyI=";
   };
 
   postPatch = ''
