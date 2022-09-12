@@ -69,14 +69,15 @@ let
       sha256 = "sha256-PDjyddV5KxKGORECWUMp6YsXc3kks0T5gxKrCZKbdL4=";
     };
   };
-in stdenv.mkDerivation rec {
+in
+stdenv.mkDerivation (finalAttrs: {
   pname = "mangohud";
   version = "0.6.8";
 
   src = fetchFromGitHub {
     owner = "flightlessmango";
     repo = "MangoHud";
-    rev = "refs/tags/v${version}";
+    rev = "refs/tags/v${finalAttrs.version}";
     fetchSubmodules = true;
     sha256 = "sha256-jfmgN90kViHa7vMOjo2x4bNY2QbLk93uYEvaA4DxYvg=";
   };
@@ -191,4 +192,4 @@ in stdenv.mkDerivation rec {
     license = licenses.mit;
     maintainers = with maintainers; [ kira-bruneau zeratax ];
   };
-}
+})
