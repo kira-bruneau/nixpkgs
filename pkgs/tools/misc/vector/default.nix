@@ -16,6 +16,7 @@
 , tzdata
 , cmake
 , perl
+, bootstrap_cmds
   # kafka is optional but one of the most used features
 , enableKafka ? true
   # TODO investigate adding "api" "api-client" "vrl-cli" and various "vendor-*"
@@ -43,7 +44,10 @@ rustPlatform.buildRustPackage {
   };
 
   cargoSha256 = "sha256-WWX47pbva7ZmPR6hBstJ5VqOwu3mkhhsHK3LHHqQjDE=";
-  nativeBuildInputs = [ pkg-config cmake perl ];
+  nativeBuildInputs = [ pkg-config cmake perl ]
+    # Provides the mig command used by the krb5-src cargo dependency
+    ++ lib.optional stdenv.isDarwin bootstrap_cmds;
+
   buildInputs = [ oniguruma openssl protobuf rdkafka zstd ]
     ++ lib.optionals stdenv.isDarwin [ Security libiconv coreutils CoreServices ];
 
@@ -107,6 +111,6 @@ rustPlatform.buildRustPackage {
     homepage = "https://github.com/timberio/vector";
     license = with licenses; [ asl20 ];
     maintainers = with maintainers; [ thoughtpolice happysalada ];
-    platforms = with platforms; linux;
+    platforms = with platforms; all;
   };
 }

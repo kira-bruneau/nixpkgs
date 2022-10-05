@@ -35056,6 +35056,7 @@ with pkgs;
   };
 
   vector = callPackage ../tools/misc/vector {
+    inherit (buildPackages.darwin) bootstrap_cmds;
     inherit (darwin.apple_sdk.frameworks) Security CoreServices;
   };
 
