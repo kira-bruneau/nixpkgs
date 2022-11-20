@@ -1040,12 +1040,47 @@ signald -d /var/lib/signald/db \
       </listitem>
       <listitem>
         <para>
-          The Syncthing service now only allows absolute paths—starting
-          with <literal>/</literal> or <literal>~/</literal>—for
-          <literal>services.syncthing.folders.&lt;name&gt;.path</literal>.
-          In a future release other paths will be allowed again and
-          interpreted relative to
-          <literal>services.syncthing.dataDir</literal>.
+          The Syncthing service has been tweaked to improve user experience:
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para>
+                <literal>services.syncthing.dataDir</literal> has been renamed to
+                <literal>services.syncthing.home</literal>.
+              </para>
+            </listitem>
+            <listitem>
+             <para>
+               The service now only allows absolute paths—starting
+               with <literal>/</literal> or <literal>~/</literal>—for
+               <literal>services.syncthing.folders.&lt;name&gt;.path</literal>.
+               In a future release other paths will be allowed again and
+               interpreted relative to
+               <literal>services.syncthing.home</literal>.
+             </para>
+            </listitem>
+            <listitem>
+              <para>
+                For new installations, folder <literal>path</literal>
+                will default to a path in home. This will not affect
+                existing installations.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                For new installations, folder
+                <literal>ignorePerms</literal> will default to
+                <literal>false</literal> to match the upstream
+                default. This will not affect existing installations.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                The params attribute for folder versioning is no
+                longer required, and will use syncthing's defaults if
+                not defined.
+              </para>
+            </listitem>
+          </itemizedlist>
         </para>
       </listitem>
       <listitem>
