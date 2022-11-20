@@ -312,8 +312,8 @@ in {
                     '';
                   };
                   fsPath = mkOption {
-                    default = "";
                     type = either str path;
+                    default = "";
                     description = mdDoc ''
                       Path to the versioning folder.
                       See <https://docs.syncthing.net/users/versioning.html>.
@@ -321,6 +321,7 @@ in {
                   };
                   params = mkOption {
                     type = attrsOf (either str path);
+                    default = {};
                     description = mdDoc ''
                       The parameters for versioning. Structure depends on
                       [versioning.type](#opt-services.syncthing.folders._name_.versioning.type).
