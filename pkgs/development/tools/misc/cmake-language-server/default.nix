@@ -1,4 +1,5 @@
 { lib
+, stdenv
 , buildPythonApplication
 , fetchFromGitHub
 , poetry-core
@@ -56,5 +57,8 @@ buildPythonApplication rec {
     homepage = "https://github.com/regen100/cmake-language-server";
     license = licenses.mit;
     maintainers = with maintainers; [ kira-bruneau ];
+
+    # pandas (required by poetry) is marked as broken on i686
+    broken = stdenv.isi686;
   };
 }
