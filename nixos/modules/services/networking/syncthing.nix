@@ -360,9 +360,12 @@ in {
 
             ignorePerms = mkOption {
               type = types.bool;
-              default = true;
+              default =
+                if versionAtLeast config.system.stateVersion "22.11"
+                then false
+                else true;
               description = lib.mdDoc ''
-                Whether to ignore permission changes.
+                Whether to ignore permission bits.
               '';
             };
 
