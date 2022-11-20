@@ -213,7 +213,7 @@ in {
 
             path = mkOption {
               # TODO for release 23.05: allow relative paths again and set
-              # working directory to cfg.dataDir
+              # working directory to cfg.home
               type = types.str // {
                 check = x: types.str.check x && (substring 0 1 x == "/" || substring 0 2 x == "~/");
                 description = types.str.description + " starting with / or ~/";
@@ -417,7 +417,7 @@ in {
         description = mdDoc ''
           The user to run Syncthing as.
           By default, a user named `${defaultUser}` will be created whose home
-          directory is [dataDir](#opt-services.syncthing.dataDir).
+          directory is [home](#opt-services.syncthing.home).
         '';
       };
 
@@ -443,7 +443,7 @@ in {
         '';
       };
 
-      dataDir = mkOption {
+      home = mkOption {
         type = types.path;
         default = "/var/lib/syncthing";
         example = "/home/yourUser";
@@ -459,14 +459,14 @@ in {
         description = lib.mdDoc ''
           The path where the settings and keys will exist.
         '';
-        default = cfg.dataDir + optionalString cond "/.config/syncthing";
+        default = cfg.home + optionalString cond "/.config/syncthing";
         defaultText = literalMD ''
           * if `stateVersion >= 19.03`:
 
-                config.${opt.dataDir} + "/.config/syncthing"
+                config.${opt.home} + "/.config/syncthing"
           * otherwise:
 
-                config.${opt.dataDir}
+                config.${opt.home}
         '';
       };
 
@@ -510,6 +510,7 @@ in {
       This option was removed because Syncthing now has the inotify functionality included under the name "fswatcher".
       It can be enabled on a per-folder basis through the web interface.
     '')
+    (mkRenamedOptionModule [ "services" "syncthing" "dataDir" ] [ "services" "syncthing" "home" ])
   ] ++ map (o:
     mkRenamedOptionModule [ "services" "syncthing" "declarative" o ] [ "services" "syncthing" o ]
   ) [ "cert" "key" "devices" "folders" "overrideDevices" "overrideFolders" "extraOptions"];
@@ -528,7 +529,7 @@ in {
     users.users = mkIf (cfg.systemService && cfg.user == defaultUser) {
       ${defaultUser} =
         { group = cfg.group;
-          home  = cfg.dataDir;
+          home = cfg.home;
           createHome = true;
           uid = config.ids.uids.syncthing;
           description = "Syncthing daemon user";
