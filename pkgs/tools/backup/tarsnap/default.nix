@@ -1,9 +1,11 @@
-{ lib, stdenv, fetchurl, openssl, zlib, e2fsprogs, bzip2 }:
+{ lib, stdenv, fetchFromGitHub, fetchurl, openssl, zlib, e2fsprogs, bzip2 }:
 
 let
-  zshCompletion = fetchurl {
-    url = "https://gist.githubusercontent.com/thoughtpolice/daa9431044883d3896f6/raw/282360677007db9739e5bf229873d3b231eb303a/tarsnap.zsh";
-    sha256 = "0pawqwichzpz29rva7mh8lpx4zznnrh2rqyzzj6h7z98l0dxpair";
+  zshCompletion = fetchFromGitHub {
+    owner = "thoughtpolice";
+    gist = "daa9431044883d3896f6";
+    rev = "282360677007db9739e5bf229873d3b231eb303a";
+    hash = "sha256-NRZPJf85ykr1CAxwSxV5PmCePwWZbZJSx2EUfjLapjQ=";
   };
 in
 stdenv.mkDerivation rec {
@@ -12,7 +14,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://www.tarsnap.com/download/tarsnap-autoconf-${version}.tgz";
-    sha256 = "1mbzq81l4my5wdhyxyma04sblr43m8p7ryycbpi6n78w1hwfbjmw";
+    hash = "sha256-vMrlOAwcHWviXcz7fC6qg2S6NAGq+u5h48VXQgPCf9U=";
   };
 
   preConfigure = ''
@@ -28,7 +30,7 @@ stdenv.mkDerivation rec {
 
   postInstall = ''
     # Install some handy-dandy shell completions
-    install -m 444 -D ${zshCompletion} $out/share/zsh/site-functions/_tarsnap
+    install -m 444 -D ${zshCompletion}/tarsnap.zsh $out/share/zsh/site-functions/_tarsnap
   '';
 
   buildInputs = [ openssl zlib ] ++ lib.optional stdenv.isLinux e2fsprogs
