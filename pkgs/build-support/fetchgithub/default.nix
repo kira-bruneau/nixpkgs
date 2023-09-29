@@ -1,14 +1,16 @@
 { lib, fetchgit, fetchzip }:
 
 lib.makeOverridable (
-{ owner, repo, rev, name ? "source"
+{ owner, repo ? null, gist ? null, rev, name ? "source"
 , fetchSubmodules ? false, leaveDotGit ? null
 , deepClone ? false, private ? false, forceFetchGit ? false
 , sparseCheckout ? []
-, githubBase ? "github.com", varPrefix ? null
+, githubBase ? "${lib.optionalString (gist != null) "gist."}github.com", varPrefix ? null
 , meta ? { }
 , ... # For hash agility
 }@args:
+
+assert repo != null || gist != null;
 
 let
 
@@ -16,14 +18,14 @@ let
     then builtins.unsafeGetAttrPos "description" args.meta
     else builtins.unsafeGetAttrPos "rev" args
   );
-  baseUrl = "https://${githubBase}/${owner}/${repo}";
+  baseUrl = "https://${githubBase}/${owner}/${if repo != null then repo else gist}";
   newMeta = meta // {
     homepage = meta.homepage or baseUrl;
 
     # to indicate where derivation originates, similar to make-derivation.nix's mkDerivation
     position = "${position.file}:${toString position.line}";
   };
-  passthruAttrs = removeAttrs args [ "owner" "repo" "rev" "fetchSubmodules" "forceFetchGit" "private" "githubBase" "varPrefix" ];
+  passthruAttrs = removeAttrs args [ "owner" "repo" "gist" "rev" "fetchSubmodules" "forceFetchGit" "private" "githubBase" "varPrefix" ];
   varBase = "NIX${lib.optionalString (varPrefix != null) "_${varPrefix}"}_GITHUB_PRIVATE_";
   useFetchGit = fetchSubmodules || (leaveDotGit == true) || deepClone || forceFetchGit || (sparseCheckout != []);
   # We prefer fetchzip in cases we don't need submodules as the hash
@@ -60,5 +62,8 @@ let
   ) // privateAttrs // passthruAttrs // { inherit name; };
 in
 
-fetcher fetcherArgs // { meta = newMeta; inherit rev owner repo; }
+fetcher fetcherArgs
+  // { meta = newMeta; inherit rev owner; }
+  // lib.optionalAttrs (repo != null) { inherit repo; }
+  // lib.optionalAttrs (gist != null) { inherit gist; }
 )
