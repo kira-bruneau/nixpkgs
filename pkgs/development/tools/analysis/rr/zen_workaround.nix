@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchzip, kernel }:
+{ stdenv, lib, fetchFromGitHub, kernel }:
 
 /* The python script shouldn't be needed for users of this kernel module.
   https://github.com/rr-debugger/rr/blob/master/scripts/zen_workaround.py
@@ -8,9 +8,11 @@ stdenv.mkDerivation rec {
   pname = "rr-zen_workaround";
   version = "2020-09-22";
 
-  src = fetchzip {
-    url = "https://gist.github.com/glandium/01d54cefdb70561b5f6675e08f2990f2/archive/2f430f0c136a69b0886281d0c76708997d8878af.zip";
-    sha256 = "1mbmbyymgl75wparv3rgnyxnc44rd6n935jziz9anl9apy031ryi";
+  src = fetchFromGitHub {
+    owner = "glandium";
+    gist = "01d54cefdb70561b5f6675e08f2990f2";
+    rev = "2f430f0c136a69b0886281d0c76708997d8878af";
+    hash = "sha256-0ecwgL8qUavSj1+WkaxpmRBmu7cvj53V5eXQV71fddU=";
   };
 
   hardeningDisable = [ "pic" ];
