@@ -1,13 +1,14 @@
-{ lib, stdenv, fetchgit, makeWrapper, coreutils, gawk, util-linux }:
+{ lib, stdenv, fetchFromGitHub, makeWrapper, coreutils, gawk, util-linux }:
 
 stdenv.mkDerivation {
   pname = "openvpn-learnaddress";
   version = "unstable-2013-10-21";
 
-  src = fetchgit {
-    url = "https://gist.github.com/4058733.git";
+  src = fetchFromGitHub {
+    owner = "offlinehacker";
+    gist = "4058733";
     rev = "19b03c3beb0190df46ea07bf4b68244acb8eae80";
-    sha256 = "16pcyvyhwsx34i0cjkkx906lmrwdd9gvznvqdwlad4ha8l8f8z42";
+    hash = "sha256-gnzkEEUKkqYob3jbv19qjedKDUh9TslAJKNrDv327Jo=";
   };
 
   nativeBuildInputs = [ makeWrapper ];
