@@ -1,20 +1,20 @@
-{ lib, stdenv, fetchurl, libX11 }:
+{ lib, stdenv, fetchFromGitHub, libX11 }:
 
 stdenv.mkDerivation rec {
   pname = "xgeometry-select";
   version  = "0.1";
 
-  src = fetchurl {
-    url    = "https://gist.githubusercontent.com/obadz/7e008b1f803c4cdcfaf7321c78bcbe92/raw/7e7361e71ff0f74655ee92bd6d2c042f8586f2ae/xgeometry-select.c";
-    sha256 = "0s7kirgh5iz91m3qy8xiq0j4gljy8zrcnylf4szl5h0lrsaqj7ya";
+  src = fetchFromGitHub {
+    owner = "obadz";
+    gist = "7e008b1f803c4cdcfaf7321c78bcbe92";
+    rev = "7e7361e71ff0f74655ee92bd6d2c042f8586f2ae";
+    hash = "sha256-Adt3jrpSmDuxy1n4+6YuSKzdlsQpRZB40OWwcs1ASf8=";
   };
-
-  dontUnpack = true;
 
   buildInputs = [ libX11 ];
 
   buildPhase = ''
-    gcc -Wall -lX11 ${src} -o xgeometry-select
+    gcc -Wall -lX11 ${src}/xgeometry-select.c -o xgeometry-select
   '';
 
   installPhase = ''
