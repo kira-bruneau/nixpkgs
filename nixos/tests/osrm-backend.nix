@@ -21,10 +21,11 @@ in {
           # http://download.geofabrik.de/europe/monaco-latest.osm.pbf
           # as apparently no provider of OSM files guarantees immutability,
           # this is hosted as a gist on GitHub.
-          src = pkgs.fetchgit {
-            url = "https://gist.github.com/erictapen/01e39f73a6c856eac53ba809a94cdb83";
+          src = pkgs.fetchFromGitHub {
+            owner = "erictapen";
+            gist = "01e39f73a6c856eac53ba809a94cdb83";
             rev = "9b1ff0f24deb40e5cf7df51f843dbe860637b8ce";
-            sha256 = "1scqhmrfnpwsy5i2a9jpggqnvfgj4hv9p4qyvc79321pzkbv59nx";
+            hash = "sha256-3aay1/w3iJEO2x6TmzYk8rlt8XtXJiVi8Zpf63KFmOk=";
           };
 
           buildCommand = ''
