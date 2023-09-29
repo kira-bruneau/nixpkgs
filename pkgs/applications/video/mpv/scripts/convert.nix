@@ -1,13 +1,14 @@
-{ stdenvNoCC, fetchgit, lib
+{ stdenvNoCC, fetchFromGitHub, lib
 , yad, mkvtoolnix-cli, libnotify }:
 
 stdenvNoCC.mkDerivation {
   pname = "mpv-convert-script";
   version = "2016-03-18";
-  src = fetchgit {
-    url = "https://gist.github.com/Zehkul/25ea7ae77b30af959be0";
+  src = fetchFromGitHub {
+    owner = "Zehkul";
+    gist = "25ea7ae77b30af959be0";
     rev = "f95cee43e390e843a47e8ec9d1711a12a8cd343d";
-    sha256 = "13m7l4sy2r8jv2sfrb3vvqvnim4a9ilnv28q5drlg09v298z3mck";
+    hash = "sha256-k9XxURI7gUdzKxiJbWlMitRoN957rOy02BJl4TWhp44=";
   };
 
   patches = [ ./convert.patch ];
