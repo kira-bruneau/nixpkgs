@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchFromGitHub, fetchurl, fetchpatch, substituteAll, cmake, makeWrapper, pkg-config
+{ stdenv, lib, fetchFromGitHub, fetchpatch, substituteAll, cmake, makeWrapper, pkg-config
 , curl, ffmpeg, glib, libjpeg, libselinux, libsepol, mp4v2, libmysqlclient, mariadb, pcre, perl, perlPackages
 , polkit, util-linuxMinimal, x264, zlib
 , coreutils, procps, psmisc, nixosTests }:
@@ -43,10 +43,12 @@
 let
   addons = [
     {
-      path = "scripts/ZoneMinder/lib/ZoneMinder/Control/Xiaomi.pm";
-      src = fetchurl {
-        url = "https://gist.githubusercontent.com/joshstrange/73a2f24dfaf5cd5b470024096ce2680f/raw/e964270c5cdbf95e5b7f214f7f0fc6113791530e/Xiaomi.pm";
-        sha256 = "04n1ap8fx66xfl9q9rypj48pzbgzikq0gisfsfm8wdsmflarz43v";
+      path = "scripts/ZoneMinder/lib/ZoneMinder/Control";
+      src = fetchFromGitHub {
+        owner = "joshstrange";
+        gist = "73a2f24dfaf5cd5b470024096ce2680f";
+        rev = "e964270c5cdbf95e5b7f214f7f0fc6113791530e";
+        hash = "sha256-Y81ERMTMpUyHAGg8LZherDimxP4pitO2Why4Lk3IYeM=";
       };
     }
   ];
@@ -63,7 +65,7 @@ in stdenv.mkDerivation rec {
     owner  = "ZoneMinder";
     repo   = "zoneminder";
     rev    = version;
-    sha256 = "sha256-KUhFZrF7BuLB2Z3LnTcHEEZVA6iosam6YsOd8KWvx7E=";
+    hash = "sha256-KUhFZrF7BuLB2Z3LnTcHEEZVA6iosam6YsOd8KWvx7E=";
     fetchSubmodules = true;
   };
 
@@ -76,7 +78,7 @@ in stdenv.mkDerivation rec {
     rm -rf web/api/lib/Cake/Test
 
     ${lib.concatStringsSep "\n" (map (e: ''
-      cp ${e.src} ${e.path}
+      cp ${e.src}/* ${e.path}
     '') addons)}
 
     for d in scripts/ZoneMinder onvif/{modules,proxy} ; do
