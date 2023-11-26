@@ -1,63 +1,82 @@
 { lib
-, sway-unwrapped
-, makeWrapper, symlinkJoin, writeShellScriptBin
-, withBaseWrapper ? true, extraSessionCommands ? "", dbus
-, withGtkWrapper ? false, wrapGAppsHook, gdk-pixbuf, glib, gtk3
-, extraOptions ? [] # E.g.: [ "--verbose" ]
-# Used by the NixOS module:
-, isNixOS ? false
+, makeWrapper
+, symlinkJoin
+, writeShellScriptBin
 
-, enableXWayland ? true
-, dbusSupport ? true
+# withBaseWrapper & dbusSupport
+, dbus
+
+# withGtkWrapper
+, wrapGAppsHook
+, gdk-pixbuf
+, glib
+, gtk3
 }:
 
-assert extraSessionCommands != "" -> withBaseWrapper;
+sway-unwrapped:
 
 with lib;
 
 let
-  sway = sway-unwrapped.overrideAttrs (oa: { inherit isNixOS enableXWayland; });
-  baseWrapper = writeShellScriptBin sway.meta.mainProgram ''
-     set -o errexit
-     if [ ! "$_SWAY_WRAPPER_ALREADY_EXECUTED" ]; then
-       export XDG_CURRENT_DESKTOP=${sway.meta.mainProgram}
-       ${extraSessionCommands}
-       export _SWAY_WRAPPER_ALREADY_EXECUTED=1
-     fi
-     if [ "$DBUS_SESSION_BUS_ADDRESS" ]; then
-       export DBUS_SESSION_BUS_ADDRESS
-       exec ${lib.getExe sway} "$@"
-     else
-       exec ${lib.optionalString dbusSupport "${dbus}/bin/dbus-run-session"} ${lib.getExe sway} "$@"
-     fi
-   '';
-in symlinkJoin {
-  name = "${sway.meta.mainProgram}-${sway.version}";
+  wrapper =
+    { withBaseWrapper ? true
+      , extraSessionCommands ? ""
+      , dbusSupport ? false
+    , withGtkWrapper ? false
+    , extraOptions ? [] # E.g.: [ "--verbose" ]
 
-  paths = (optional withBaseWrapper baseWrapper)
-    ++ [ sway ];
+    # sway-unwrapped overrides
+    , isNixOS ? false
+    , enableXWayland ? true
+    }@args:
 
-  strictDeps = false;
-  nativeBuildInputs = [ makeWrapper ]
-    ++ (optional withGtkWrapper wrapGAppsHook);
+    assert args ? extraSessionCommands || args ? dbusSupport -> withBaseWrapper;
 
-  buildInputs = optionals withGtkWrapper [ gdk-pixbuf glib gtk3 ];
+    let
+      sway = sway-unwrapped.overrideAttrs (oa: { inherit isNixOS enableXWayland; });
+      baseWrapper = writeShellScriptBin sway.meta.mainProgram ''
+         set -o errexit
+         if [ ! "$_SWAY_WRAPPER_ALREADY_EXECUTED" ]; then
+           export XDG_CURRENT_DESKTOP=${sway.meta.mainProgram}
+           ${extraSessionCommands}
+           export _SWAY_WRAPPER_ALREADY_EXECUTED=1
+         fi
+         if [ "$DBUS_SESSION_BUS_ADDRESS" ]; then
+           export DBUS_SESSION_BUS_ADDRESS
+           exec ${lib.getExe sway} "$@"
+         else
+           exec ${lib.optionalString dbusSupport "${dbus}/bin/dbus-run-session"} ${lib.getExe sway} "$@"
+         fi
+     '';
+    in
+    symlinkJoin {
+      name = "${sway.meta.mainProgram}-${sway.version}";
 
-  # We want to run wrapProgram manually
-  dontWrapGApps = true;
+      paths = (optional withBaseWrapper baseWrapper)
+        ++ [ sway ];
 
-  postBuild = ''
-    ${optionalString withGtkWrapper "gappsWrapperArgsHook"}
+      strictDeps = false;
+      nativeBuildInputs = [ makeWrapper ]
+        ++ (optional withGtkWrapper wrapGAppsHook);
 
-    wrapProgram $out/bin/${sway.meta.mainProgram} \
-      ${optionalString withGtkWrapper ''"''${gappsWrapperArgs[@]}"''} \
-      ${optionalString (extraOptions != []) "${concatMapStrings (x: " --add-flags " + x) extraOptions}"}
-  '';
+      buildInputs = optionals withGtkWrapper [ gdk-pixbuf glib gtk3 ];
 
-  passthru = {
-    inherit (sway.passthru) tests;
-    providedSessions = [ sway.meta.mainProgram ];
-  };
+      # We want to run wrapProgram manually
+      dontWrapGApps = true;
 
-  inherit (sway) meta;
-}
+      postBuild = ''
+        ${optionalString withGtkWrapper "gappsWrapperArgsHook"}
+
+        wrapProgram $out/bin/${sway.meta.mainProgram} \
+          ${optionalString withGtkWrapper ''"''${gappsWrapperArgs[@]}"''} \
+          ${optionalString (extraOptions != []) "${concatMapStrings (x: " --add-flags " + x) extraOptions}"}
+      '';
+
+      passthru = {
+        inherit (sway.passthru) tests;
+        providedSessions = [ sway.meta.mainProgram ];
+      };
+
+      inherit (sway) meta;
+    };
+in lib.makeOverridable wrapper
