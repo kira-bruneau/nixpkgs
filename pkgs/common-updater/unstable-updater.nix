@@ -11,6 +11,7 @@
 { url ? null # The git url, if empty it will be set to src.gitRepoUrl
 , branch ? null
 , shallowClone ? true
+, versionFormat ? "unstable-%Y-%m-%d" # https://man7.org/linux/man-pages/man3/strftime.3.html
 }:
 
 let
@@ -66,9 +67,8 @@ let
     ${git}/bin/git clone "''${cloneArgs[@]}" "$url" "$tmpdir"
 
     pushd "$tmpdir"
-    commit_date="$(${git}/bin/git show -s --pretty='format:%cs')"
+    new_version="$(TZ=UTC ${git}/bin/git show -s --date=format-local:${lib.escapeShellArg versionFormat} --format='%cd')"
     commit_sha="$(${git}/bin/git show -s --pretty='format:%H')"
-    new_version="unstable-$commit_date"
     popd
     ${coreutils}/bin/rm -rf "$tmpdir"
 
