@@ -12,7 +12,7 @@ let
 in
 melpaBuild {
   pname = "acm-terminal";
-  version = "20230601.1326"; # 13:26 UTC
+  version = "20230601.1326";
 
   src = fetchFromGitHub {
     owner = "twlz0ne";
@@ -32,7 +32,9 @@ melpaBuild {
     (acm-terminal :repo "twlz0ne/acm-terminal" :fetcher github)
   '';
 
-  passthru.updateScript = unstableGitUpdater { };
+  passthru.updateScript = unstableGitUpdater {
+    versionFormat = "%Y%m%d.%-H%M";
+  };
 
   meta = with lib; {
     description = "Patch for LSP bridge acm on Terminal";

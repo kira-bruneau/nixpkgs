@@ -28,7 +28,7 @@ let
 in
 melpaBuild {
   pname = "lsp-bridge";
-  version = "20231021.309"; # 3:09 UTC
+  version = "20231021.309";
 
   src = fetchFromGitHub {
     owner = "manateelazycat";
@@ -88,7 +88,9 @@ melpaBuild {
     runHook postCheck
   '';
 
-  passthru.updateScript = unstableGitUpdater { };
+  passthru.updateScript = unstableGitUpdater {
+    versionFormat = "%Y%m%d.%-H%M";
+  };
 
   meta = with lib; {
     description = "A blazingly fast LSP client for Emacs";

@@ -33,7 +33,9 @@ melpaBuild {
        "msg"))
   '';
 
-  passthru.updateScript = unstableGitUpdater { };
+  passthru.updateScript = unstableGitUpdater {
+    versionFormat = "%Y%m%d.%-H%M";
+  };
 
   meta = {
     homepage = "https://github.com/misohena/el-easydraw";

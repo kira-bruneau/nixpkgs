@@ -47,7 +47,7 @@
 # ];
 melpaBuild rec {
   pname = "mind-wave";
-  version = "20230523.0332"; # 03:32 UTC
+  version = "20230523.0332";
   src = pkgs.fetchFromGitHub {
     owner = "manateelazycat";
     repo = "mind-wave";
@@ -79,7 +79,9 @@ melpaBuild rec {
     "utils.py"))
   '';
   doCheck = true;
-  passthru.updateScript = pkgs.unstableGitUpdater {};
+  passthru.updateScript = pkgs.unstableGitUpdater {
+    versionFormat = "%Y%m%d.%-H%M";
+  };
   meta = with lib; {
     description = " Emacs AI plugin based on ChatGPT API ";
     homepage = "https://github.com/manateelazycat/mind-wave";

@@ -32,7 +32,9 @@ melpaBuild {
                :files ("tools/emacs/ligo-mode.el"))
   '';
 
-  passthru.updateScript = unstableGitUpdater { };
+  passthru.updateScript = unstableGitUpdater {
+    versionFormat = "%Y%m%d.%-H%M";
+  };
 
   meta = {
     description = "A major mode for editing LIGO source code";
