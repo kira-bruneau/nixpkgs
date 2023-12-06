@@ -70,7 +70,7 @@ let
     commit_sha="$(${git}/bin/git show -s --pretty='format:%H')"
     new_version="unstable-$commit_date"
     popd
-    # ${coreutils}/bin/rm -rf "$tmpdir"
+    ${coreutils}/bin/rm -rf "$tmpdir"
 
     # update the nix expression
     ${common-updater-scripts}/bin/update-source-version \
